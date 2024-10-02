@@ -41,7 +41,7 @@ const mongoose = require("mongoose");
 const { router } = require("./routes");
 
 const app = express();
-const PORT = process.env.PORT || 3001;  // Используем переменную окружения для порта
+const PORT = process.env.PORT || 3001;
 
 // Подключение к MongoDB
 mongoose.connect(
@@ -58,21 +58,24 @@ db.once("open", () => {
   console.log("Connected to MongoDB");
 });
 
-// Настройка CORS
-app.use(cors({
-  origin: ['http://localhost:3000', 'https://your-frontend-url.vercel.app'], // Разрешенные источники
-  methods: 'GET,POST,PUT,DELETE',  // Разрешенные методы
-  credentials: true  // Если работаешь с куки или авторизацией
-}));
+// Настройка CORS, чтобы разрешить запросы с локальной разработки и с твоего фронтенда на Vercel
+app.use(
+  cors({
+    origin: ['http://localhost:3000', 'https://ai-generator-mealplan-client.vercel.app'],
+    methods: 'GET,POST',
+    credentials: true, // Если нужно работать с куки или авторизацией
+  })
+);
 
-app.use(express.json());  // Для обработки JSON данных в запросах
+app.use(express.json()); // Обработка JSON-запросов
 
-// Подключаем роуты
+// Подключение роутов
 app.use("/", router);
 
 // Запуск сервера
-const server = app.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
 module.exports = app;
+
