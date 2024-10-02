@@ -15,6 +15,9 @@ const allowedOrigins = [
   "https://ai-generator-mealplan-server.vercel.app",
   "https://ai-generator-mealplan-server.vercel.app/page1",
   "https://ai-generator-mealplan-server.vercel.app/page3",
+  "https://ai-generator-mealplan-client.vercel.app",
+  "https://ai-generator-mealplan-client.vercel.app/page1",
+  "https://ai-generator-mealplan-client.vercel.app/page3"
 ];
 app.use(
   cors({
