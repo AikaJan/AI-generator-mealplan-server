@@ -117,25 +117,25 @@ router.post("/savePlan", async (req, res) => {
 });
 
 
-// router.get("/getPlan", async (req, res) => {
-//   try {
-//     const plans = await MealPlan.find().sort({ createdAt: -1 });
-//     res.status(200).json(plans);
-//   } catch (error) {
-//     console.error("Error fetching meal plans:", error);
-//     res.status(500).json({ error: "Failed to fetch meal plans" });
-//   }
-// });
-
 router.get("/getPlan", async (req, res) => {
   try {
-    const plans = await MealPlan.find().sort({ createdAt: -1 }).limit(10); // Add pagination or limits if needed
+    const plans = await MealPlan.find().sort({ createdAt: -1 });
     res.status(200).json(plans);
   } catch (error) {
     console.error("Error fetching meal plans:", error);
     res.status(500).json({ error: "Failed to fetch meal plans" });
   }
 });
+
+// router.get("/getPlan", async (req, res) => {
+//   try {
+//     const plans = await MealPlan.find().sort({ createdAt: -1 }).limit(10); // Add pagination or limits if needed
+//     res.status(200).json(plans);
+//   } catch (error) {
+//     console.error("Error fetching meal plans:", error);
+//     res.status(500).json({ error: "Failed to fetch meal plans" });
+//   }
+// });
 
 
 module.exports = {
