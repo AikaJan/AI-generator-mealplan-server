@@ -48,6 +48,11 @@ db.once("open", () => {
 });
 
 app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("Server is running");
+});
+
 app.use("/", router);
 
 const server = app.listen(PORT, () => {
