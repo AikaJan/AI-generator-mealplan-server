@@ -58,16 +58,16 @@ db.once("open", () => {
   console.log("Connected to MongoDB");
 });
 
-// Настройка CORS, чтобы разрешить запросы с локальной разработки и с твоего фронтенда на Vercel
+// Настройка CORS для разрешения запросов с клиента на Vercel
 app.use(
   cors({
-    origin: ['http://localhost:3000', 'https://ai-generator-mealplan-client.vercel.app'],
-    methods: 'GET,POST',
-    credentials: true, // Если нужно работать с куки или авторизацией
+    origin: "https://ai-generator-mealplan-client.vercel.app", // Разрешаем запросы с Vercel-клиента
+    methods: "GET,POST", // Разрешаем только методы GET и POST
+    credentials: true,  // Если необходимо работать с авторизацией или куки
   })
 );
 
-app.use(express.json()); // Обработка JSON-запросов
+app.use(express.json()); // Для обработки JSON в запросах
 
 // Подключение роутов
 app.use("/", router);
@@ -76,6 +76,9 @@ app.use("/", router);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+module.exports = app;
+
 
 module.exports = app;
 
