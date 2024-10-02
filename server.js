@@ -12,7 +12,7 @@ const PORT = 3001;
 // Настройка CORS с несколькими разрешенными источниками
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://your-production-domain.com",
+  "https://ai-generator-mealplan-server.vercel.app",
 ];
 app.use(
   cors({
