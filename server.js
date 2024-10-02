@@ -13,6 +13,8 @@ const PORT = 3001;
 const allowedOrigins = [
   "http://localhost:3000",
   "https://ai-generator-mealplan-server.vercel.app",
+  "https://ai-generator-mealplan-server.vercel.app/page1",
+  "https://ai-generator-mealplan-server.vercel.app/page3",
 ];
 app.use(
   cors({
