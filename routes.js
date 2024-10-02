@@ -109,48 +109,67 @@
 //   fetchOpenAICompletionsStream,
 //   router,
 // };
-require("dotenv").config();
-
 const express = require("express");
-const cors = require("cors");
-const mongoose = require("mongoose");
-const { router } = require("./routes");
+const OpenAI = require("openai");
 
-const app = express();
-const PORT = process.env.PORT || 3001;
+const router = express.Router();
 
-// Подключение к MongoDB
-mongoose.connect(
-  process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/mealplans_db",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+// Пример функции для работы с OpenAI API
+async function fetchOpenAICompletionsStream(messages, callback) {
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: messages,
+      stream: true,
+    });
+
+    for await (const chunk of completion) {
+      callback(chunk);
+    }
+  } catch (error) {
+    console.error("Error fetching OpenAI completions:", error);
+    throw new Error("OpenAI API Error");
   }
-);
+}
 
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "MongoDB connection error:"));
-db.once("open", () => {
-  console.log("Connected to MongoDB");
+// Маршрут для генерации рецепта
+router.get("/recipeStream", (req, res) => {
+  const mealPlan = req.query.mealPlan;
+
+  // Проверяем, передан ли mealPlan, и если нет, возвращаем ошибку 400
+  if (!mealPlan || mealPlan.trim() === "") {
+    return res.status(400).json({ error: "mealPlan is required" });
+  }
+
+  // Настраиваем заголовки для Server-Sent Events
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  const sendEvent = (chunk) => {
+    let chunkResponse;
+    if (chunk.choices[0].finish_reason === "stop") {
+      res.write(`data: ${JSON.stringify({ action: "close" })}\n\n`);
+    } else {
+      chunkResponse =
+        chunk.choices[0].delta.role === "assistant"
+          ? { action: "start" }
+          : { action: "chunk", chunk: chunk.choices[0].delta.content };
+
+      res.write(`data: ${JSON.stringify(chunkResponse)}\n\n`);
+    }
+  };
+
+  const prompt = `Generate a 7-day gluten and sugar-free meal plan: ${mealPlan}`;
+  const messages = [{ role: "system", content: prompt }];
+
+  // Вызываем функцию для взаимодействия с OpenAI API
+  fetchOpenAICompletionsStream(messages, sendEvent);
+
+  // Закрываем соединение, если клиент его разрывает
+  req.on("close", () => res.end());
 });
 
-// Настройка CORS для разрешения запросов с клиента на Vercel
-app.use(
-  cors({
-    origin: "https://ai-generator-mealplan-client.vercel.app", // Разрешаем запросы с клиента
-    methods: "GET,POST", // Разрешаем методы GET и POST
-    credentials: true,  // Если необходимо работать с авторизацией или куки
-  })
-);
-
-app.use(express.json()); // Для обработки JSON в запросах
-
-// Подключение роутов
-app.use("/", router);
-
-// Запуск сервера
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-module.exports = app;
+module.exports = { router };
