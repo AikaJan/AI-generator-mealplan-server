@@ -78,6 +78,23 @@ router.get("/recipeStream", (req, res) => {
   }
 });
 
+// router.post("/savePlan", async (req, res) => {
+//   const { mealPlan } = req.body;
+
+//   if (!mealPlan) {
+//     return res.status(400).json({ error: "mealPlan is required" });
+//   }
+
+//   try {
+//     const newMealPlan = new MealPlan({ plan: mealPlan });
+//     await newMealPlan.save();
+//     res.status(200).json({ message: "Meal plan saved successfully!" });
+//   } catch (error) {
+//     console.error("Error saving meal plan:", error);
+//     res.status(500).json({ error: "Failed to save meal plan" });
+//   }
+// });
+
 router.post("/savePlan", async (req, res) => {
   const { mealPlan } = req.body;
 
@@ -85,25 +102,41 @@ router.post("/savePlan", async (req, res) => {
     return res.status(400).json({ error: "mealPlan is required" });
   }
 
+  // Send a quick acknowledgment response
+  res.status(200).json({ message: "Meal plan save request received!" });
+
+  // Handle saving the meal plan in the background
   try {
     const newMealPlan = new MealPlan({ plan: mealPlan });
     await newMealPlan.save();
-    res.status(200).json({ message: "Meal plan saved successfully!" });
+    console.log("Meal plan saved successfully!");
   } catch (error) {
     console.error("Error saving meal plan:", error);
-    res.status(500).json({ error: "Failed to save meal plan" });
+    // Optionally, log or handle the error, but no further response is needed
   }
 });
 
+
+// router.get("/getPlan", async (req, res) => {
+//   try {
+//     const plans = await MealPlan.find().sort({ createdAt: -1 });
+//     res.status(200).json(plans);
+//   } catch (error) {
+//     console.error("Error fetching meal plans:", error);
+//     res.status(500).json({ error: "Failed to fetch meal plans" });
+//   }
+// });
+
 router.get("/getPlan", async (req, res) => {
   try {
-    const plans = await MealPlan.find().sort({ createdAt: -1 });
+    const plans = await MealPlan.find().sort({ createdAt: -1 }).limit(10); // Add pagination or limits if needed
     res.status(200).json(plans);
   } catch (error) {
     console.error("Error fetching meal plans:", error);
     res.status(500).json({ error: "Failed to fetch meal plans" });
   }
 });
+
 
 module.exports = {
   fetchOpenAICompletionsStream,
