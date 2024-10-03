@@ -15,10 +15,14 @@ async function fetchOpenAICompletionsStream(messages, callback) {
       messages: messages,
       stream: true,
     });
-
+    let response = '';
+    
     for await (const chunk of completion) {
-      callback(chunk);
+      // callback(chunk);
+      response += chunk;
+      
     }
+    callback(response)
   } catch (error) {
     console.error("Error fetching OpenAI completions:", error);
     throw new Error("OpenAI API Error");
