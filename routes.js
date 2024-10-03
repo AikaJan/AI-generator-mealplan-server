@@ -54,7 +54,8 @@ router.get("/recipeStream", (req, res) => {
 
   if (mealPlan) {
     const prompt = [
-      "Generate a detailed 7-day gluten and sugar-free meal plan.",
+      // "Generate a one line 7-day gluten and sugar-free meal plan.",
+       "Generate a one line per day  7-day gluten and sugar-free meal plan.",
       mealPlan,
     ];
 
@@ -66,7 +67,7 @@ router.get("/recipeStream", (req, res) => {
       "Generate a recipe that incorporates the following details:",
       `[Ingredients: ${ingredients}]`,
       `[Meal Type: ${mealType}]`,
-      "Please provide a detailed recipe, including steps for preparation and cooking. Only use the ingredients.",
+      // "Please provide a detailed recipe, including steps for preparation and cooking. Only use the ingredients.",
       "The recipe should highlight the fresh and vibrant nature of the ingredients.",
       "Format the ingredient list so that each subsequent step and ingredient appears on a new line, paragraph, and keep the text to 2,300 words or less.",
     ];
