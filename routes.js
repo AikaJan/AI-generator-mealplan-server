@@ -1,4 +1,4 @@
-const express = require("express");
+// const express = require("express");
 const MealPlan = require("./mealPlanSchema");
 const OpenAI = require("openai");
 
@@ -15,14 +15,14 @@ async function fetchOpenAICompletionsStream(messages, callback) {
       messages: messages,
       stream: true,
     });
-    let response = '';
+    // let response = '';
     
     for await (const chunk of completion) {
-      // callback(chunk);
-      response += chunk;
+      callback(chunk);
+      // response += chunk;
       
     }
-    callback(response)
+    // callback(response)
   } catch (error) {
     console.error("Error fetching OpenAI completions:", error);
     throw new Error("OpenAI API Error");
