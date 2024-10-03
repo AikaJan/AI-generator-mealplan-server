@@ -54,8 +54,8 @@ router.get("/recipeStream", (req, res) => {
 
   if (mealPlan) {
     const prompt = [
-      // "Generate a one line 7-day gluten and sugar-free meal plan.",
-       "Generate a one line per day  7-day gluten and sugar-free meal plan.",
+      "Generate a one line 7-day gluten and sugar-free meal plan.",
+       // "Generate a one line per day  7-day gluten and sugar-free meal plan.",
       mealPlan,
     ];
 
